@@ -45,7 +45,7 @@ DB_NAME=ecommerce_db
 ## Usage
 
 - To connect to the database run` mysql -u root -p`
-- Then source the 'schema.sql'
+- Then source the `schema.sql`
 - To seed the file run `npm run seed`
 - Finally, to connect to the server run `npm start`
 
