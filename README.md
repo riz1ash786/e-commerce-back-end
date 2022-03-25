@@ -11,7 +11,6 @@
 - [Deployed application](#deployed-application)
 - [GitHub repository](#github-repository)
 - [Questions](#questions)
-- [Screenshot](#screenshot)
 - [Demonstration Links](#demonstration-links)
 
 ## Description
@@ -20,18 +19,35 @@ I have been tasked to build the back end for an e-commerce site by modifying sta
 
 ## Installation
 
-<!-- Step 1 -
-Clone repository link into terminal
-https://github.com/riz1ash786/e-commerce-back-end
+Start with cloning this repository link on to your local machine:
 
-Step 2 -
-Open terminal and install dependencies using the following command `npm i` -->
+```
+$ git clone https://github.com/riz1ash786/e-commerce-back-end
+$ cd e-commerce-back-end
+```
+
+To install the required dependencies and set up the application, run:
+
+```
+$ npm i
+```
+
+You will also need to place a .env file in the root directory of the project, in order to connect to your MySQL database. Here's a specific example:
+
+file: .env
+
+```
+DB_USER=root
+DB_PW=
+DB_NAME=ecommerce_db
+```
 
 ## Usage
 
-<!-- - Enter `mysql -u root -p` to access the database via MySQL.
-
-- Enter `npm start` in terminal to start the application. -->
+- To connect to the database run` mysql -u root -p`
+- Then source the 'schema.sql'
+- To seed the file run `npm run seed`
+- Finally, to connect to the server run `npm start`
 
 ## Contributing
 
@@ -60,14 +76,10 @@ https://github.com/riz1ash786/e-commerce-back-end
 If you have any additional questions then please get in touch via github or email. Thank you.
 
 - Github - https://github.com/riz1ash786
-- Email address - riz1ash786@gmail.com
-
-## Screenshot
-
-Employee Tracker Command Line
-
-<!-- ![employee-tracker-command-line](./assets/images/command-line.png) -->
+- Email - riz1ash786@gmail.com
 
 ## Demonstration Links
 
-<!-- https://drive.google.com/file/d/13BNQX_uRQM_sw1YTHkKuoxSOsxmUO_pg/view?usp=sharing -->
+[Terminal Demo Video](https://drive.google.com/file/d/1D3Bu132hNN_uVuWsKMOw-5BewqF7ZA37/view?usp=sharing "Terminal Demo Link")
+
+[Insomnia Demo Video](https://drive.google.com/file/d/1lVH3U-wq6OS73NdCWPOA1ye3nHL1hOyO/view?usp=sharing "Insomnia Demo Link")

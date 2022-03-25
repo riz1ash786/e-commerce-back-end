@@ -3,37 +3,46 @@ const { Tag, Product, ProductTag } = require("../../models");
 
 // The `/api/tags` endpoint
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   // find all tags
   // be sure to include its associated Product data
-  Tag.findAll({
-    include: {
-      model: Product,
-    },
+  await Tag.findAll({
+    attributes: ["id", "tag_name"],
+    include: [
+      {
+        model: Product,
+        attributes: ["id", "product_name", "price", "stock", "category_id"],
+        through: "ProductTag",
+      },
+    ],
   })
-    .then((tagData) => res.json(tagData))
+    .then((parsedTagData) => {
+      res.json(parsedTagData);
+    })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
+      res.json(err);
     });
 });
 
 router.get("/:id", (req, res) => {
   // find a single tag by its `id`
-  // be sure to include its associated Product data
-  Tag.findOne({
-    where: {
-      id: req.params.id,
-    },
-    include: {
-      model: Product,
-    },
+  Tag.findByPk(req.params.id, {
+    include: [
+      {
+        model: Product,
+        attributes: ["id", "product_name", "price", "stock", "category_id"],
+        through: "ProductTag",
+      },
+    ],
   })
-    .then((tagData) => res.json(tagData))
+    .then((retrievedTag) => {
+      res.json(retrievedTag);
+    })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
+      res.json(err);
     });
+
+  // be sure to include its associated Product data
 });
 
 router.post("/", (req, res) => {
@@ -41,10 +50,11 @@ router.post("/", (req, res) => {
   Tag.create({
     tag_name: req.body.tag_name,
   })
-    .then((tagData) => res.json(tagData))
+    .then((tag) => {
+      res.json(tag);
+    })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
+      res.json(err);
     });
 });
 
@@ -60,18 +70,11 @@ router.put("/:id", (req, res) => {
       },
     }
   )
-    .then((tagData) => {
-      if (!tagData) {
-        res
-          .status(404)
-          .json({ message: "No Tag has been found with that ID." });
-        return;
-      }
-      res.json(tagData);
+    .then((tag) => {
+      res.json(tag);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
+      res.json(err);
     });
 });
 
@@ -82,18 +85,11 @@ router.delete("/:id", (req, res) => {
       id: req.params.id,
     },
   })
-    .then((tagData) => {
-      if (!tagData) {
-        res
-          .status(404)
-          .json({ message: "No Tag has been found with that ID." });
-        return;
-      }
-      res.json(tagData);
+    .then((qtyRemoved) => {
+      res.json(`${qtyRemoved} tag were removed from the database`);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
+      res.json(err);
     });
 });
 

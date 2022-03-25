@@ -4,25 +4,28 @@ const { Product, Category, Tag, ProductTag } = require("../../models");
 // The `/api/products` endpoint
 
 // get all products
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
   // find all products
   // be sure to include its associated Category and Tag data
-  Product.findAll({
+  await Product.findAll({
+    attributes: ["id", "product_name", "price", "stock", "category_id"],
     include: [
       {
-        model: Category,
-        attributes: ["category_name"],
+        model: Tag,
+        attributes: ["id", "tag_name"],
+        through: "ProductTag",
       },
       {
-        model: Tag,
-        attributes: ["tag_name"],
+        model: Category,
+        attributes: ["id", "category_name"],
       },
     ],
   })
-    .then((productData) => res.json(productData))
+    .then((productData) => {
+      res.json(productData);
+    })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
+      res.json(err);
     });
 });
 
@@ -30,25 +33,24 @@ router.get("/", (req, res) => {
 router.get("/:id", (req, res) => {
   // find a single product by its `id`
   // be sure to include its associated Category and Tag data
-  Product.findOne({
-    where: {
-      id: req.params.id,
-    },
+  Product.findByPk(req.params.id, {
     include: [
       {
-        model: Category,
-        attributes: ["category_name"],
+        model: Tag,
+        attributes: ["id", "tag_name"],
+        through: "ProductTag",
       },
       {
-        model: Tag,
-        attributes: ["tag_name"],
+        model: Category,
+        attributes: ["id", "category_name"],
       },
     ],
   })
-    .then((productData) => res.json(productData))
+    .then((specificProduct) => {
+      res.json(specificProduct);
+    })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
+      res.json(err);
     });
 });
 
@@ -73,9 +75,10 @@ router.post("/", (req, res) => {
           };
         });
         return ProductTag.bulkCreate(productTagIdArr);
+      } else {
+        // if no product tags, just respond
+        res.status(200).json(product);
       }
-      // if no product tags, just respond
-      res.status(200).json(product);
     })
     .then((productTagIds) => res.status(200).json(productTagIds))
     .catch((err) => {
@@ -128,23 +131,17 @@ router.put("/:id", (req, res) => {
 
 router.delete("/:id", (req, res) => {
   // delete one product by its `id` value
+  let deletedProduct = Product.findByPk(req.params.id);
   Product.destroy({
     where: {
       id: req.params.id,
     },
   })
-    .then((productData) => {
-      if (!productData) {
-        res
-          .status(404)
-          .json({ message: "No Product has been found with that ID." });
-        return;
-      }
-      res.json(productData);
+    .then((product) => {
+      res.json(`${deletedProduct} was removed from the database`);
     })
     .catch((err) => {
-      console.log(err);
-      res.status(500).json(err);
+      res.json(err);
     });
 });
 
